@@ -9,12 +9,14 @@
 
 # we will need the following function:
 
+library(gg)
+
 CountOccurrences <- function(x,i){
   return(sum(x==i))
 }
 
 lambda <- 8
-N <- 10000 # number of random, poisson-distributed, numbers
+N <- 100 # number of random, poisson-distributed, numbers
 
 y <- rpois(N,lambda)
 x <- seq(from = 0,to = max(y)+2)
@@ -25,10 +27,15 @@ for (i in 1:length((x))) {
   z_actual[i] <- lambda^x[i]*exp(-lambda)/factorial(x[i])
 }
 
-graph.data <- data.frame(x,z, z_actual)
+random.data <- data.frame(ind = x,dep = z, Color = "Random")
+exact.data <- data.frame(ind = x,dep = z_actual, Color = "Exact")
+
+graph.data <- rbind(random.data,exact.data)
+
 
 # Basic scatter plot
-ggplot( graph.data , aes(x, z)) + geom_point()
-# ggplot( graph.data , aes(x, z_actual)) + geom_point() +
-#   geom_point(size=2, shape=23)
+ggplot( graph.data , aes(ind, dep)) + geom_point() +
+  geom_point(color = Color)
+
+ggplot(graph.data)+geom_point(aes(ind, dep,color= Color))
 
